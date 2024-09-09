@@ -1,7 +1,9 @@
+"use client"
 import React from "react";
 import Image from "next/image";
 import { BsTwitter } from "react-icons/bs";
 import { BiBell, BiBookmark, BiEnvelope, BiHash, BiHome, BiUser } from "react-icons/bi";
+import { GoogleLogin } from '@react-oauth/google'
 import FeedCard from "./components/FeedCard/page";
 
 
@@ -69,7 +71,15 @@ export default function Home() {
           <FeedCard />
           <FeedCard />
         </div>
-        <div className="col-span-3"></div>
+        <div className="col-span-3">
+
+          <div className="p-5 bg-slate-700 rounded-lg">
+            <h1 className="my-2 text-2xl">New to Twitter?</h1>
+            <GoogleLogin
+              onSuccess={(cred) => { console.log(cred) }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
