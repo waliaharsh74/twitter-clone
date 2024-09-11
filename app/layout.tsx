@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import localFont from "next/font/local";
 import "./globals.css";
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { Toaster } from "react-hot-toast";
 
 
 const geistSans = localFont({
@@ -37,7 +38,7 @@ export default function RootLayout({
         >
           <div className={inter.className}>
 
-
+            <Toaster />
             {children}
 
           </div>
