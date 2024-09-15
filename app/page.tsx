@@ -8,6 +8,8 @@ import FeedCard from "./components/FeedCard/page";
 import toast from "react-hot-toast";
 import { graphqlClient } from "../clients/api";
 import { verifyUserGoogleTokenQuery } from "../graphql/query/user"
+import { useCurrentUser } from "@/hooks/user";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 interface TwitterSidebarButtons {
@@ -42,18 +44,29 @@ const sideBarMenuItems: TwitterSidebarButtons[] = [
 ]
 
 export default function Home() {
+  const { user } = useCurrentUser()
+  console.log(user);
+  const queryClient = useQueryClient()
+
   const handleLoignWithGoogle = useCallback(async (cred: CredentialResponse) => {
     const googleToken = cred.credential
+
     if (!googleToken) return toast.error(`Google token not Found`)
     const { verifyGoogleToken } = await graphqlClient.request(verifyUserGoogleTokenQuery, { token: googleToken })
-    if (verifyGoogleToken) window.localStorage.setItem('__twitter_token', verifyGoogleToken)
+
     toast.success('verified Sucess')
     console.log(verifyGoogleToken);
-  }, [])
+
+    if (verifyGoogleToken) window.localStorage.setItem('__twitter_token', verifyGoogleToken)
+    await queryClient.invalidateQueries(["current-user"])
+
+
+  }, [queryClient])
+
   return (
     <div className="">
-      <div className="grid grid-cols-12 h-screen w-fit px-20">
-        <div className="col-span-3  justify-start pt-8 pr-4">
+      <div className="grid grid-cols-12 h-screen w-fit px-20 ">
+        <div className="col-span-3  justify-start pt-8 pr-4 relative">
           <div className="text-4xl h-fit w-fit hover:bg-gray-700 rounded-full p-2 ml-[10px] cursor-pointer transition-all" >
             <BsTwitter />
           </div>
@@ -66,8 +79,14 @@ export default function Home() {
             </ul>
             <button className="bg-[#1d9bf0] p-3 mt-4 rounded-full w-full">Tweet</button>
           </div>
+          {user && (<div className="absolute bottom-5 flex gap-2 items-center bg-slate-800 p-3 rounded-xl">
 
+            <Image className="rounded-full" src={user?.profileImageURL || ""} alt="user" height={50} width={50} />
+            <h3 className="text-xl">{user.firstName}{" " + user.lastName}</h3>
+          </div>
+          )}
         </div>
+
         <div className="col-span-6 border-r-[0.5px] border-l-[0.5px] border-gray-600 h-screen overflow-scroll scrollbar-hidden">
           <FeedCard />
           <FeedCard />
@@ -82,14 +101,15 @@ export default function Home() {
           <FeedCard />
           <FeedCard />
         </div>
+
         <div className="col-span-3">
 
-          <div className="p-5 bg-slate-700 rounded-lg">
+          {!user && <div className="p-5 bg-slate-700 rounded-lg">
             <h1 className="my-2 text-2xl">New to Twitter?</h1>
             <GoogleLogin
               onSuccess={handleLoignWithGoogle}
             />
-          </div>
+          </div>}
         </div>
       </div>
     </div>
