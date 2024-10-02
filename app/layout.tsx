@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ClientProviders from "./ClientProviders";
+import Twitterlayout from "./components/FeedCard/Layout/TwitterLayout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,10 +38,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ClientProviders>
-          <div className={inter.className}>
-            <Toaster />
-            {children}
-          </div>
+          <Twitterlayout>
+            <div className={inter.className}>
+              <Toaster />
+              {children}
+            </div>
+          </Twitterlayout>
         </ClientProviders>
       </body>
     </html>
