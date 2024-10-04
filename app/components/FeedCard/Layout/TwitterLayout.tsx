@@ -16,9 +16,9 @@ import Link from "next/link";
 import { useGetAllTweets } from "@/hooks/tweet";
 
 interface TwitterSidebarButtons {
-    title: String,
+    title: string,
     icon: React.ReactNode
-    link: String
+    link: string
 }
 
 interface TwitterlayoutProps {

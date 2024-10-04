@@ -1,14 +1,46 @@
 "use client"
-import { useRouter } from "next/router";
+import { useRouter, useParams } from "next/navigation";
 import { useCurrentUser } from "@/hooks/user"
-import type { NextPage } from "next"
+import type { GetServerSideProps, NextPage } from "next"
 import Image from "next/image";
 import { BsArrowLeftShort } from "react-icons/bs"
 import FeedCard from "../components/FeedCard/page";
-import { Tweet } from "@/gql/graphql";
-const UserProfilePage: NextPage = () => {
+import { Tweet, User } from "@/gql/graphql";
+import { graphqlClient } from "@/clients/api";
+import { getUserByIdQuery } from "@/graphql/query/user";
+import { useEffect, useState } from "react";
+
+interface ServerProps {
+    user?: User
+}
+
+const UserProfilePage: NextPage<ServerProps> = (props) => {
+    const [userInfo, setUserinfo] = useState<User | null>(null);
     const { user } = useCurrentUser();
-    // const router = useRouter()
+    let { id } = useParams();
+    id = Array.isArray(id) ? id[0] : id;
+    const router = useRouter()
+    if (!router) {
+        return <div>Loading...</div>;
+    }
+
+
+
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const info = await graphqlClient.request(getUserByIdQuery, { id });
+                console.log(info);
+                setUserinfo(info.getUserById); // Adjust according to the shape of your response
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        };
+
+        if (id) {
+            fetchUserInfo();
+        }
+    }, [id]);
     return (
         <div className="">
             <nav className=" flex items-center gap-3 p-3 ">
@@ -29,4 +61,22 @@ const UserProfilePage: NextPage = () => {
         </div>
     )
 }
+
 export default UserProfilePage
+
+
+
+
+// export const getServerSideProps: GetServerSideProps<ServerProps> = async (context) => {
+//     const id = context.query.id as string | undefined;
+//     if (!id) return { notFound: true, props: { user: undefined } }
+//     const userInfo = await graphqlClient.request(getUserByIdQuery, { id })
+//     if (!userInfo?.getUserById) return { notFound: true, props: { user: undefined } }
+//     console.log(id);
+//     return {
+//         props: {
+//             userInfo: userInfo?.getUserById as User
+//         }
+//     }
+
+// }
