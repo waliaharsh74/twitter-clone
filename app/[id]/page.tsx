@@ -30,8 +30,8 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
         const fetchUserInfo = async () => {
             try {
                 const info = await graphqlClient.request(getUserByIdQuery, { id });
-                console.log(info);
                 setUserinfo(info.getUserById); // Adjust according to the shape of your response
+                console.log(userInfo);
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
@@ -46,17 +46,17 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
             <nav className=" flex items-center gap-3 p-3 ">
                 <BsArrowLeftShort className="text-3xl" />
                 <div>
-                    <h1 className="text-xl font-bold">Name</h1>
-                    <h1 className="text-md font-bold text-slate-500 ">100 tweets</h1>
+                    <h1 className="text-xl font-bold">{userInfo?.firstName+" "+userInfo?.lastName}</h1>
+                    <h1 className="text-md font-bold text-slate-500 ">{userInfo?.tweets?.length} tweets</h1>
                 </div>
             </nav>
             <div className="p-4 border-b border-slate-800">
 
-                {user?.profileImageURL && <Image className="rounded-full" src={user?.profileImageURL} width={100} height={100} alt="profile Image" />}
+                {userInfo?.profileImageURL && <Image className="rounded-full" src={userInfo?.profileImageURL} width={100} height={100} alt="profile Image" />}
                 <h1 className="text-xl font-bold mt-5">Name</h1>
             </div>
             <div>
-                {user?.tweets?.map((tweet) => tweet && <FeedCard data={tweet as Tweet} key={tweet.id} />)}
+                {userInfo?.tweets?.map((tweet) => tweet && <FeedCard data={tweet as Tweet} key={tweet.id} />)}
             </div>
         </div>
     )
