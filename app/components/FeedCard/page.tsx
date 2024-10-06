@@ -25,6 +25,7 @@ const FeedCard: React.FC<FeedCardProp> = (props) => {
                     </h3>
 
                     <p>{data.content} </p>
+                    {data.imageUrl && <Image src={data.imageUrl} width={100} height={100} alt='tweet Images' />}
                     <div className='flex justify-between mt-5 text-xl items-start pr-10 w-[80%]'>
                         <div>
                             <BiMessageRounded />

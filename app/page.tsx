@@ -13,6 +13,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import TweetCard from "./components/TweetCard/page";
 import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
 import Twitterlayout from "./components/FeedCard/Layout/TwitterLayout";
+import { getSignedURLForTweetQuery } from "@/graphql/query/tweet";
+import axios from "axios";
+
 
 
 
@@ -22,39 +25,50 @@ import Twitterlayout from "./components/FeedCard/Layout/TwitterLayout";
 
 export default function Home() {
   const { user } = useCurrentUser()
-  console.log(user);
   const queryClient = useQueryClient()
   const { tweets = [] } = useGetAllTweets()
   const [content, setContent] = useState('')
+  const [imageURL, setImageURL] = useState('')
   const { mutate } = useCreateTweet()
 
-  const handleLoignWithGoogle = useCallback(async (cred: CredentialResponse) => {
-    const googleToken = cred.credential
-
-    if (!googleToken) return toast.error(`Google token not Found`)
-    const { verifyGoogleToken } = await graphqlClient.request(verifyUserGoogleTokenQuery, { token: googleToken })
-
-    toast.success('verified Sucess')
-    console.log(verifyGoogleToken);
-
-    if (verifyGoogleToken) window.localStorage.setItem('__twitter_token', verifyGoogleToken)
-    await queryClient.invalidateQueries({ queryKey: ["current-user"] })
-
-
-  }, [queryClient])
+  const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
+    return async (event: Event) => {
+      event.preventDefault();
+      const file: File | null | undefined = input.files?.item(0);
+      if (!file) return
+      const { getSignedURLForTweet } = await graphqlClient.request(getSignedURLForTweetQuery, {
+        imageName: file.name,
+        imageType: file.type
+      })
+      if (!getSignedURLForTweet) return
+      if (getSignedURLForTweet) {
+        toast.loading('Uploading Image...', { id: '2' })
+        await axios.put(getSignedURLForTweet, file, { headers: { 'Content-type': file.type } })
+        toast.success('Image Uploaded...', { id: '2' })
+      }
+      const url = new URL(getSignedURLForTweet)
+      const myFilePath = `${url.origin}${url.pathname}`
+      setImageURL(myFilePath)
+      console.log(imageURL);
+    }
+  }, [])
 
   const handleSelectImage = useCallback(() => {
     const input = document.createElement("input")
     input.setAttribute("type", "file")
     input.setAttribute("accept", "image/*")
+    const handlerFn = handleInputChangeFile(input)
+    input.addEventListener('change', handlerFn)
     input.click();
-  }, [])
+  }, [handleInputChangeFile])
 
   const handleCreateTweet = useCallback(() => {
+    console.log(imageURL);
     mutate({
-      content
+      content,
+      imageUrl: imageURL
     })
-  }, [content, mutate])
+  }, [content, mutate, imageURL])
 
   return (
     <div className="">
@@ -68,6 +82,7 @@ export default function Home() {
           <div className='col-span-10'>
 
             <textarea value={content} onChange={(e) => setContent(e.target.value)} className="border-b h-10 w-full bg-transparent text-xl p-3" placeholder="What's happening?" rows={6} id=""></textarea>
+            {imageURL && <Image src={imageURL} width={100} height={100} alt="Tweet Image" />}
             <div className="mt-2 flex justify-between items-center ">
 
               <BiImageAlt onClick={handleSelectImage} className="text-2xl" />

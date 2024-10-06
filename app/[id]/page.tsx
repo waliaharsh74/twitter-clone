@@ -46,7 +46,7 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
             <nav className=" flex items-center gap-3 p-3 ">
                 <BsArrowLeftShort className="text-3xl" />
                 <div>
-                    <h1 className="text-xl font-bold">{userInfo?.firstName+" "+userInfo?.lastName}</h1>
+                    <h1 className="text-xl font-bold">{userInfo?.firstName + " " + userInfo?.lastName}</h1>
                     <h1 className="text-md font-bold text-slate-500 ">{userInfo?.tweets?.length} tweets</h1>
                 </div>
             </nav>
