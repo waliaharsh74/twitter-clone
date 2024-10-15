@@ -7,8 +7,10 @@ import FeedCard from "../components/FeedCard/page";
 import { Tweet, User } from "@/gql/graphql";
 import { graphqlClient } from "@/clients/api";
 import { getUserByIdQuery } from "@/graphql/query/user";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCurrentUser } from "@/hooks/user";
+import { followUserMutation, unFollowUserMutation } from "@/graphql/mutations/user";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ServerProps {
     user?: User
@@ -16,17 +18,60 @@ interface ServerProps {
 
 const UserProfilePage: NextPage<ServerProps> = () => {
     const [userInfo, setUserinfo] = useState<User | null>(null);
-    const { user:currentUser } = useCurrentUser();
+    const { user: currentUser } = useCurrentUser();
+    const queryClient = useQueryClient()
     let { id } = useParams();
     id = Array.isArray(id) ? id[0] : id;
     const router = useRouter()
     if (!router) {
         return <div>Loading...</div>;
     }
-    const amIFollowing=useMemo(()=>{
-        if(!userInfo)return false
-        return(currentUser?.followers?.findIndex((ele)=>ele?.id==userInfo.id)??-1)>=0
-    },[userInfo,currentUser?.followers])
+    const amIFollowing = useMemo(() => {
+        if (!userInfo) return false
+        if (!currentUser) return false
+        return (userInfo?.followers?.findIndex((ele) => ele?.id == currentUser.id) ?? -1) >= 0
+    }, [userInfo, currentUser?.followers])
+
+
+    const handleFollow = useCallback(async () => {
+        if (!userInfo || !currentUser) return;
+
+        await graphqlClient.request(followUserMutation, { to: userInfo.id });
+
+
+        setUserinfo(prev => {
+            if (prev) {
+                return {
+                    ...prev,
+                    followers: [...(prev.followers || []), currentUser],
+                };
+            }
+            return prev;
+        });
+
+        await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+    }, [userInfo, currentUser, queryClient]);
+
+    const handleUnFollow = useCallback(async () => {
+        if (!userInfo || !currentUser) return;
+
+        await graphqlClient.request(unFollowUserMutation, { to: userInfo.id });
+
+
+        {
+            setUserinfo(prev => {
+                if (prev) {
+                    return {
+                        ...prev,
+                        followers: prev.followers ? prev.followers.filter(follower => follower.id !== currentUser.id) : [],
+                    };
+                }
+                return prev;
+            });
+        }
+
+        await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+    }, [userInfo, currentUser, queryClient]);
 
 
 
@@ -66,9 +111,9 @@ const UserProfilePage: NextPage<ServerProps> = () => {
                         <span>{`followers: ` + userInfo?.followers?.length}</span>
                         <span>{`following: ` + userInfo?.following?.length}</span>
                     </div>
-                  { currentUser && userInfo && currentUser.id!==userInfo.id &&
-                   (amIFollowing ?<button className="bg-white p-3 text-black rounded-full text-sm">follow</button>:<button className="bg-white p-3 text-black rounded-full text-sm">unfollow</button>)
-                   }
+                    {currentUser && userInfo && currentUser.id !== userInfo.id &&
+                        (amIFollowing ? <button onClick={handleUnFollow} className="bg-white p-3 text-black rounded-full text-sm">unfollow</button> : <button onClick={handleFollow} className="bg-white p-3 text-black rounded-full text-sm">follow</button>)
+                    }
                 </div>
             </div>
             <div>

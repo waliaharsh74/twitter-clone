@@ -45,11 +45,13 @@ export const getUserByIdQuery = graphql(`#graphql
           lastName
           profileImageURL
           followers{
+            id
             firstName
             lastName
             profileImageURL
           }
           following{
+            id
             firstName
             lastName
             profileImageURL
