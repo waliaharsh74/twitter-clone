@@ -2,18 +2,18 @@
 import { useCurrentUser } from "@/hooks/user";
 import React, { useCallback, useMemo } from "react";
 import Image from "next/image";
-import FeedCard from "../page";
 
-import { SlOptions } from "react-icons/sl";
+
+
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import { graphqlClient } from "@/clients/api";
 import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { BsTwitter } from "react-icons/bs";
-import { BiBell, BiBookmark, BiEnvelope, BiHash, BiHome, BiImageAlt, BiUser } from "react-icons/bi";
+import { BiBell, BiBookmark, BiEnvelope, BiHash, BiHome, BiUser } from "react-icons/bi";
 import Link from "next/link";
-import { useGetAllTweets } from "@/hooks/tweet";
+
 
 interface TwitterSidebarButtons {
     title: string,
@@ -28,7 +28,7 @@ interface TwitterlayoutProps {
 const Twitterlayout: React.FC<TwitterlayoutProps> = (props) => {
     const { user } = useCurrentUser();
     const queryClient = useQueryClient();
-    const { tweets = [] } = useGetAllTweets()
+    // const { tweets = [] } = useGetAllTweets()
 
     const sideBarMenuItems: TwitterSidebarButtons[] = useMemo(() => [
         {
@@ -112,21 +112,47 @@ const Twitterlayout: React.FC<TwitterlayoutProps> = (props) => {
 
             <div className="col-span-6 border-r-[0.5px] border-l-[0.5px] border-gray-600 h-screen overflow-scroll scrollbar-hidden">
                 {props.children}
-
-
-
-
-
             </div>
 
             <div className="col-span-3">
 
-                {!user && <div className="p-5 bg-slate-700 rounded-lg">
+                {!user ? (<div className="p-5 bg-slate-700 rounded-lg">
                     <h1 className="my-2 text-2xl">New to Twitter?</h1>
                     <GoogleLogin
                         onSuccess={handleLoginWithGoogle}
                     />
-                </div>}
+                </div>) :
+                    (
+                        <div className="px-4 py-3 bg-slate-800 rounded-lg">
+                            <h1 className="my-2 text-2xl mb-5">Users you may know</h1>
+                            {user?.recommendedUsers?.map((el) => (
+                                <div className="flex items-center gap-3 mt-2" key={el?.id}>
+                                    {el?.profileImageURL && (
+                                        <Image
+                                            src={el?.profileImageURL}
+                                            alt="user-image"
+                                            className="rounded-full"
+                                            width={60}
+                                            height={60}
+                                        />
+                                    )}
+                                    <div>
+                                        <div className="text-lg">
+                                            {el?.firstName} {el?.lastName}
+                                        </div>
+                                        <Link
+                                            href={`/${el?.id}`}
+                                            className="bg-white text-black text-sm px-5 py-1 w-full rounded-lg"
+                                        >
+                                            View
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )
+                }
+
             </div>
         </div>
 
