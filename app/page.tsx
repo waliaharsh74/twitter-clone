@@ -1,31 +1,18 @@
 "use client"
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
-import { BsTwitter } from "react-icons/bs";
-import { BiBell, BiBookmark, BiEnvelope, BiHash, BiHome, BiImageAlt, BiUser } from "react-icons/bi";
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
+import { BiImageAlt } from "react-icons/bi";
 import FeedCard from "./components/FeedCard/page";
 import toast from "react-hot-toast";
 import { graphqlClient } from "../clients/api";
-import { verifyUserGoogleTokenQuery } from "../graphql/query/user"
 import { useCurrentUser } from "@/hooks/user";
-import { useQueryClient } from "@tanstack/react-query";
-import TweetCard from "./components/TweetCard/page";
 import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
-import Twitterlayout from "./components/FeedCard/Layout/TwitterLayout";
 import { getSignedURLForTweetQuery } from "@/graphql/query/tweet";
 import axios from "axios";
 
 
-
-
-
-
-
-
 export default function Home() {
   const { user } = useCurrentUser()
-  const queryClient = useQueryClient()
   const { tweets = [] } = useGetAllTweets()
   const [content, setContent] = useState('')
   const [imageURL, setImageURL] = useState('')
@@ -51,7 +38,7 @@ export default function Home() {
       setImageURL(myFilePath)
       console.log(imageURL);
     }
-  }, [])
+  }, [imageURL])
 
   const handleSelectImage = useCallback(() => {
     const input = document.createElement("input")
