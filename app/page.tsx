@@ -71,12 +71,12 @@ export default function Home() {
   })
 
   }, [content, mutate, imageURL])
-  if(loading)return <SkeletonLoader/>
+  // if(loading)return <SkeletonLoader/>
 
   return (
     <div className="">
 
-      <div className='border border-l-0 border-r-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer'>
+{user &&<div className='border border-l-0 border-r-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer'>
         <div className="grid grid-cols-12 gap-2">
           <div className='col-span-2 md:col-span-1'>
             {user?.profileImageURL && <Image src={user?.profileImageURL} alt='User Avatar' className="rounded-full w-8 h-8 md:w-12 md:h-12" width={50} height={50} />}
@@ -94,7 +94,7 @@ export default function Home() {
 
           </div>
         </div>
-      </div>
+      </div>}
       {tweets?.map(tweet => (tweet && <FeedCard key={tweet.id} data={tweet} />))}
 
     </div>

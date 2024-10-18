@@ -85,9 +85,13 @@ const Twitterlayout: React.FC<TwitterlayoutProps> = (props) => {
 
             {user?(<div className="col-span-9 md:col-span-6 border-r border-l border-gray-600 h-screen overflow-scroll scrollbar-hidden">
                 {props.children}
-            </div>):( <div className="col-span-9 md:col-span-6  border-l border-gray-600  overflow-scroll scrollbar-hidden p-5 rounded-lg">
+            </div>):( <div className="col-span-9 md:col-span-6  border-l border-r border-gray-600  overflow-scroll scrollbar-hidden rounded-lg">
+                        <div className="block mx-12 my-2 md:hidden">
                         <h1 className="my-2 text-2xl">New to Twitter?</h1>
                         <GoogleLogin onSuccess={handleLoginWithGoogle} />
+
+                        </div>
+                        {props.children}
                     </div>)}
 
 
