@@ -1,5 +1,5 @@
 "use client"
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { BiImageAlt } from "react-icons/bi";
 import FeedCard from "./components/FeedCard/page";
@@ -9,6 +9,7 @@ import { useCurrentUser } from "@/hooks/user";
 import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
 import { getSignedURLForTweetQuery } from "@/graphql/query/tweet";
 import axios from "axios";
+import SkeletonLoader from "./[id]/Skeleton";
 
 
 export default function Home() {
@@ -16,7 +17,15 @@ export default function Home() {
   const { tweets = [] } = useGetAllTweets()
   const [content, setContent] = useState('')
   const [imageURL, setImageURL] = useState('')
+  const [loading, setLoading] = useState(true)
   const { mutate } = useCreateTweet()
+
+  useEffect((
+    
+  )=>{
+    if(user)
+      setLoading(false)
+  },[user])
 
   const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
     return async (event: Event) => {
@@ -54,21 +63,28 @@ export default function Home() {
     mutate({
       content,
       imageUrl: imageURL
-    })
+    }, {
+      onSuccess: () => {
+          setContent('');
+          setImageURL('');
+      }
+  })
+
   }, [content, mutate, imageURL])
+  if(loading)return <SkeletonLoader/>
 
   return (
     <div className="">
 
       <div className='border border-l-0 border-r-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer'>
         <div className="grid grid-cols-12 gap-2">
-          <div className='col-span-1'>
-            {user?.profileImageURL && <Image src={user?.profileImageURL} alt='User Avatar' className="rounded-full" width={50} height={50} />}
+          <div className='col-span-2 md:col-span-1'>
+            {user?.profileImageURL && <Image src={user?.profileImageURL} alt='User Avatar' className="rounded-full w-8 h-8 md:w-12 md:h-12" width={50} height={50} />}
 
           </div>
-          <div className='col-span-10'>
+          <div className='col-span-10 md:mx-5'>
 
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} className="border-b h-10 w-full bg-transparent text-xl p-3" placeholder="What's happening?" rows={6} id=""></textarea>
+            <textarea value={content} onChange={(e) => setContent(e.target.value)} className="border-b h-14 w-full bg-transparent text-xl p-3" placeholder="What's happening?" rows={6} id=""></textarea>
             {imageURL && <Image src={imageURL} width={100} height={100} alt="Tweet Image" />}
             <div className="mt-2 flex justify-between items-center ">
 

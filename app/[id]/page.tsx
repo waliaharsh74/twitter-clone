@@ -1,5 +1,6 @@
 "use client"
 import { useRouter, useParams } from "next/navigation";
+import SkeletonLoader from "./Skeleton";
 import type { NextPage } from "next"
 import Image from "next/image";
 import { BsArrowLeftShort } from "react-icons/bs"
@@ -18,6 +19,8 @@ interface ServerProps {
 
 const UserProfilePage: NextPage<ServerProps> = () => {
     const [userInfo, setUserinfo] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+
     const { user: currentUser } = useCurrentUser();
     const queryClient = useQueryClient()
     let { id } = useParams();
@@ -63,7 +66,7 @@ const UserProfilePage: NextPage<ServerProps> = () => {
                 if (prev) {
                     return {
                         ...prev,
-                        followers: prev.followers ? prev.followers.filter(follower => follower.id !== currentUser.id) : [],
+                        followers: prev.followers ? prev.followers.filter(follower => follower?.id !== currentUser.id) : [],
                     };
                 }
                 return prev;
@@ -80,10 +83,13 @@ const UserProfilePage: NextPage<ServerProps> = () => {
             try {
                 const info = await graphqlClient.request(getUserByIdQuery, { id });
                 if (info.getUserById)
-                    setUserinfo(info.getUserById);
+                    setUserinfo(info?.getUserById);
                 console.log(userInfo);
             } catch (error) {
                 console.error('Error fetching user info:', error);
+            }
+            finally{
+                setLoading(false)
             }
         };
 
@@ -91,8 +97,10 @@ const UserProfilePage: NextPage<ServerProps> = () => {
             fetchUserInfo();
         }
     }, [id]);
+    if(loading)return <SkeletonLoader/>
     return (
         <div className="">
+            
             <nav className=" flex items-center gap-3 p-3 ">
                 <BsArrowLeftShort className="text-3xl" />
                 <div>
