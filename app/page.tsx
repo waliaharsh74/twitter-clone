@@ -84,7 +84,7 @@ export default function Home() {
           </div>
           <div className='col-span-10 md:mx-5'>
 
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} className="border-b h-14 w-full bg-transparent text-xl p-3" placeholder="What's happening?" rows={6} id=""></textarea>
+            <textarea value={content} onChange={(e) => setContent(e.target.value)} className="border-b h-14 w-full bg-transparent text-md md:text-xl p-3" placeholder="What's happening?" rows={6} id=""></textarea>
             {imageURL && <Image src={imageURL} width={100} height={100} alt="Tweet Image" />}
             <div className="mt-2 flex justify-between items-center ">
 
