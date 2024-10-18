@@ -23,7 +23,7 @@ const SkeletonLoader = () => (
 
                 <div className="h-6 w-20 bg-gray-300 mb-2"></div>
                 </div>
-                <div className="h-14 w-80 bg-gray-300" />
+                <div className="h-14  w-[75%] bg-gray-300" />
             </div>
         </div>
         
@@ -36,7 +36,7 @@ const SkeletonLoader = () => (
 
                 <div className="h-6 w-20 bg-gray-300 mb-2"></div>
                 </div>
-                <div className="h-14 w-80 bg-gray-300" />
+                <div className="h-14  w-[75%] bg-gray-300" />
             </div>
         </div>
         
@@ -49,7 +49,7 @@ const SkeletonLoader = () => (
 
                 <div className="h-6 w-20 bg-gray-300 mb-2"></div>
                 </div>
-                <div className="h-14 w-80 bg-gray-300" />
+                <div className="h-14  w-[75%] bg-gray-300" />
             </div>
         </div>
         
@@ -62,7 +62,7 @@ const SkeletonLoader = () => (
 
                 <div className="h-6 w-20 bg-gray-300 mb-2"></div>
                 </div>
-                <div className="h-14 w-80 bg-gray-300" />
+                <div className="h-14  w-[75%] bg-gray-300" />
             </div>
         </div>
         
@@ -75,7 +75,7 @@ const SkeletonLoader = () => (
 
                 <div className="h-6 w-20 bg-gray-300 mb-2"></div>
                 </div>
-                <div className="h-14 w-80 bg-gray-300" />
+                <div className="h-14  w-[75%] bg-gray-300" />
             </div>
         </div>
         

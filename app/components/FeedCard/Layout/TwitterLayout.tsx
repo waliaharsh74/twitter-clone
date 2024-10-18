@@ -31,7 +31,7 @@ const Twitterlayout: React.FC<TwitterlayoutProps> = (props) => {
         { title: "Notifications", icon: <BiBell />, link: '/' },
         { title: "Messages", icon: <BiEnvelope />, link: '/' },
         { title: "Bookmarks", icon: <BiBookmark />, link: '/' },
-        { title: "Profile", icon: <BiUser />, link: `/${user?.id}` },
+        { title: "Profile", icon: <BiUser />, link: user?`/${user?.id}`:'/' },
     ], [user?.id]);
 
     const handleLoginWithGoogle = useCallback(
@@ -83,9 +83,13 @@ const Twitterlayout: React.FC<TwitterlayoutProps> = (props) => {
                 )}
             </div>
 
-            <div className="col-span-9 md:col-span-6 border-r border-l border-gray-600 h-screen overflow-scroll scrollbar-hidden">
+            {user?(<div className="col-span-9 md:col-span-6 border-r border-l border-gray-600 h-screen overflow-scroll scrollbar-hidden">
                 {props.children}
-            </div>
+            </div>):( <div className="col-span-9 md:col-span-6  border-l border-gray-600  overflow-scroll scrollbar-hidden p-5 rounded-lg">
+                        <h1 className="my-2 text-2xl">New to Twitter?</h1>
+                        <GoogleLogin onSuccess={handleLoginWithGoogle} />
+                    </div>)}
+
 
             <div className="hidden md:block col-span-3">
                 {!user ? (
