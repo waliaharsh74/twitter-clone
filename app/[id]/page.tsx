@@ -13,11 +13,9 @@ import { useCurrentUser } from "@/hooks/user";
 import { followUserMutation, unFollowUserMutation } from "@/graphql/mutations/user";
 import { useQueryClient } from "@tanstack/react-query";
 
-interface ServerProps {
-    user?: User
-}
 
-const UserProfilePage: NextPage<ServerProps> = () => {
+
+const UserProfilePage: NextPage = () => {
     const [userInfo, setUserinfo] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 

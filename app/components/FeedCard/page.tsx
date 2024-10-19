@@ -10,8 +10,9 @@ interface FeedCardProp {
     data: Tweet
 }
 
-const FeedCard: React.FC<FeedCardProp> = (props) => {
-    const { data } = props
+const FeedCard: React.FC<FeedCardProp> = ({data})  => {
+    if (!data) return null;
+    
     return (
         <div className='border border-l-0 border-r-0 border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer'>
             <div className="grid grid-cols-12 gap-2">

@@ -32,7 +32,7 @@ const Twitterlayout: React.FC<TwitterlayoutProps> = (props) => {
         { title: "Messages", icon: <BiEnvelope />, link: '/' },
         { title: "Bookmarks", icon: <BiBookmark />, link: '/' },
         { title: "Profile", icon: <BiUser />, link: user?`/${user?.id}`:'/' },
-    ], [user?.id]);
+    ], [user]);
 
     const handleLoginWithGoogle = useCallback(
         async (cred: CredentialResponse) => {

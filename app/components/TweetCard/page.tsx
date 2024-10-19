@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import React from 'react'
 import { AiOutlineHeart } from 'react-icons/ai'
 import { BiMessageRounded, BiUpload } from 'react-icons/bi'
