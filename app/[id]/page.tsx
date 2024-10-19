@@ -84,7 +84,7 @@ const UserProfilePage: NextPage<ServerProps> = () => {
                 const info = await graphqlClient.request(getUserByIdQuery, { id });
                 if (info.getUserById)
                     setUserinfo(info?.getUserById);
-                console.log(userInfo);
+                
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
@@ -136,16 +136,3 @@ export default UserProfilePage
 
 
 
-// export const getServerSideProps: GetServerSideProps<ServerProps> = async (context) => {
-//     const id = context.query.id as string | undefined;
-//     if (!id) return { notFound: true, props: { user: undefined } }
-//     const userInfo = await graphqlClient.request(getUserByIdQuery, { id })
-//     if (!userInfo?.getUserById) return { notFound: true, props: { user: undefined } }
-//     console.log(id);
-//     return {
-//         props: {
-//             userInfo: userInfo?.getUserById as User
-//         }
-//     }
-
-// }

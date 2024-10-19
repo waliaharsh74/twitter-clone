@@ -45,7 +45,7 @@ export default function Home() {
       const url = new URL(getSignedURLForTweet)
       const myFilePath = `${url.origin}${url.pathname}`
       setImageURL(myFilePath)
-      console.log(imageURL);
+     
     }
   }, [imageURL])
 
@@ -59,7 +59,7 @@ export default function Home() {
   }, [handleInputChangeFile])
 
   const handleCreateTweet = useCallback(() => {
-    console.log(imageURL);
+  
     mutate({
       content,
       imageUrl: imageURL

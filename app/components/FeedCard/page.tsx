@@ -21,7 +21,8 @@ const FeedCard: React.FC<FeedCardProp> = (props) => {
                 </div>
                 <div className='col-span-10 md:ml-5'>
                     <h3 className='mb-1'>
-                        <Link href={`/${data.author?.id}`} prefetch>{data.author?.firstName} </Link>
+                    {data.author?.id ?(<Link href={`/${data.author?.id}`} prefetch>{data.author?.firstName} </Link>):(<div>{data.author?.firstName} </div>)}
+                    
                     </h3>
 
                     <p>{data.content} </p>
