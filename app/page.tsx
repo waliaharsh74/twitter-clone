@@ -1,5 +1,5 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import { BiImageAlt } from "react-icons/bi";
 import FeedCard from "./components/FeedCard/page";
@@ -9,7 +9,7 @@ import { useCurrentUser } from "@/hooks/user";
 import { useCreateTweet, useGetAllTweets } from "@/hooks/tweet";
 import { getSignedURLForTweetQuery } from "@/graphql/query/tweet";
 import axios from "axios";
-import SkeletonLoader from "./[id]/Skeleton";
+
 
 
 export default function Home() {
@@ -17,15 +17,10 @@ export default function Home() {
   const { tweets = [] } = useGetAllTweets()
   const [content, setContent] = useState('')
   const [imageURL, setImageURL] = useState('')
-  const [loading, setLoading] = useState(true)
+
   const { mutate } = useCreateTweet()
 
-  useEffect((
-    
-  )=>{
-    if(user)
-      setLoading(false)
-  },[user])
+ 
 
   const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
     return async (event: Event) => {
@@ -47,7 +42,7 @@ export default function Home() {
       setImageURL(myFilePath)
      
     }
-  }, [imageURL])
+  }, [])
 
   const handleSelectImage = useCallback(() => {
     const input = document.createElement("input")

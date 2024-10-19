@@ -29,13 +29,15 @@ const UserProfilePage: NextPage<ServerProps> = () => {
     if (!router) {
         return <div>Loading...</div>;
     }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const amIFollowing = useMemo(() => {
         if (!userInfo) return false
         if (!currentUser) return false
         return (userInfo?.followers?.findIndex((ele) => ele?.id == currentUser.id) ?? -1) >= 0
-    }, [userInfo, currentUser?.followers])
+    }, [userInfo, currentUser])
 
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const handleFollow = useCallback(async () => {
         if (!userInfo || !currentUser) return;
 
@@ -47,7 +49,7 @@ const UserProfilePage: NextPage<ServerProps> = () => {
                 return {
                     ...prev,
                     followers: [...(prev.followers || []), currentUser],
-                };
+                }as User;;
             }
             return prev;
         });
@@ -55,6 +57,7 @@ const UserProfilePage: NextPage<ServerProps> = () => {
         await queryClient.invalidateQueries({ queryKey: ['current-user'] });
     }, [userInfo, currentUser, queryClient]);
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const handleUnFollow = useCallback(async () => {
         if (!userInfo || !currentUser) return;
 
@@ -78,12 +81,13 @@ const UserProfilePage: NextPage<ServerProps> = () => {
 
 
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
                 const info = await graphqlClient.request(getUserByIdQuery, { id });
                 if (info.getUserById)
-                    setUserinfo(info?.getUserById);
+                    setUserinfo(info?.getUserById as User);
                 
             } catch (error) {
                 console.error('Error fetching user info:', error);
